@@ -1,0 +1,92 @@
+package com.springsecurity.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.client.RestTemplate;
+
+import com.springsecurity.models.Booking;
+import com.springsecurity.models.ListUser;
+import com.springsecurity.models.Train;
+import com.springsecurity.models.UserModel;
+
+@Service
+public class UserServices {
+	@Autowired 
+	private RestTemplate resttemplate;
+	public UserModel getAllUserDetailById(@PathVariable("id") String id) {
+		// TODO Auto-generated method stub
+		
+		UserModel u= resttemplate.getForObject("http://localhost:8089/user/ga/"+id, UserModel.class);
+		
+		return u;
+	}
+
+	public UserModel  insertUser(@RequestBody UserModel user) {
+		// TODO Auto-generated method stub
+		UserModel u= resttemplate.postForObject("http://localhost:8089/user/i", user, UserModel.class);
+		return u;
+	}
+
+
+	public List<UserModel> findAllDetails() {
+		// TODO Auto-generated method stub
+		List<UserModel>  u= resttemplate.getForObject("http://localhost:8089/user/g", List.class);
+		return u;
+	}
+
+	public List<Train> getTrainInfo(){
+		List<Train> t= resttemplate.getForObject("http://localhost:8031/traindetails/g", List.class);
+		return t;
+	}
+	public Booking insertBookingInfo(@RequestBody Booking book) {
+		Booking b = resttemplate.postForObject("http://localhost:8041/bookingdetails/i", book, Booking.class);
+		return b;
+	}
+	
+
+	public UserModel findByEmailid(String emailId) {
+		RestTemplate r = new RestTemplate();
+		System.out.println("hi 23565");
+		UserModel op = r.getForObject("http://localhost:8089/user/getAll/"+emailId,UserModel.class);
+		
+	
+		return op;
+		
+	}
+	
+	public UserModel findByUserName(String username) {
+		RestTemplate r = new RestTemplate();
+		System.out.println("hi username");
+		UserModel op = r.getForObject("http://localhost:8089/user/getusername/"+username,UserModel.class);
+		System.out.println("hello");
+	
+		return op;
+		
+	}
+	public void updateUserDetails(UserModel user) {
+		// TODO Auto-generated method stub
+		RestTemplate r = new RestTemplate();
+		r.put("http://localhost:8089/user/updateUserDetails", user, UserModel.class);
+	}
+
+//	public void updateBooking(String id) {
+//		RestTemplate r = new RestTemplate();
+//		r.put("http://localhost:8089/user/update/booking/"+id,Booking.class);
+//	}
+	
+	public void updateBooking(Booking book) {
+		// TODO Auto-generated method stub
+		RestTemplate r = new RestTemplate();
+		r.put("http://localhost:8041/bookingdetails/updateBooking", book, Booking.class);
+	}
+	
+	public void deleteBooking(String id) {
+		RestTemplate r = new RestTemplate();
+		r.delete("http://localhost:8089/user/delete/booking/"+id);
+	}
+}
